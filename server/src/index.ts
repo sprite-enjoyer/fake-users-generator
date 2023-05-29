@@ -4,8 +4,8 @@ import cors from "cors";
 import bodyParser from "body-parser";
 import GenerationLogicContainer from "./classes/GenerationLogicContainer";
 import { GetRandomUsersRequestBodyType } from "./types";
+
 dotenv.config();
-import { faker } from "@faker-js/faker";
 
 const app = express();
 app.use(cors());
@@ -19,15 +19,17 @@ app.listen(PORT, () => {
 });
 
 const getRandomUsers = async (req: Request<any, any, GetRandomUsersRequestBodyType>, res: Response) => {
-  const { country, errorNumber, seed, page } = req.body;
+  const { country, errorNumber, seed } = req.body;
 
   dataGenerator
+    .setFakerByCountry(country)
+    .setFakerSeed(seed)
     .afterSeedOrCountryChange(seed, country)
     .setErrorNumber(errorNumber)
-    .setPage(page)
     .setCountry(country)
     .setSeed(seed)
-    .setFakerSeed();
+    .setMathSeed()
+    .recordGeneratedUsersCount(20, seed, country);
 
   return res
     .status(200)

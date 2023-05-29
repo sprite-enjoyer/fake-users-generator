@@ -1,4 +1,6 @@
-export type GenerationCountry = "France" | "Britan" | "Germany";
+export type GenerationCountry = "France" | "Britain" | "Germany";
+export type ErrorType = "delete" | "add" | "swap";
+export type ErrorLocation = "fullName" | "phone" | "fullAddress";
 export interface GeneratedPersonData {
   fullName: string,
   phone: string,
@@ -7,7 +9,6 @@ export interface GeneratedPersonData {
 
 export interface GetRandomUsersRequestBodyType {
   country: GenerationCountry,
-  page: number,
   errorNumber: number,
   seed: number,
 }

@@ -1,17 +1,17 @@
 import { fakerDE, fakerFR, fakerEN_GB, Faker } from '@faker-js/faker';
-import { GeneratedPersonData, GenerationCountry } from "../types";
-
+import { ErrorLocation, ErrorType, GeneratedPersonData, GenerationCountry } from "../types";
+import seedRandom from "seedrandom";
 class GenerationLogicContainer {
 
-  country: GenerationCountry = "Britan";
+  country: GenerationCountry = "Britain";
 
   faker: Faker = fakerEN_GB;
 
   errorNumber = 0;
 
-  page = 1;
-
   seed = 0;
+
+  rand = seedRandom("0");
 
   numberOfGeneratedUsersPerSeedAndCountry: Map<string, number> = new Map();
 
@@ -21,8 +21,9 @@ class GenerationLogicContainer {
   }
 
   setFakerByCountry(country: GenerationCountry) {
+    if (this.country === country) return this;
     switch (country) {
-      case "Britan":
+      case "Britain":
         this.faker = fakerEN_GB;
         break;
       case "France":
@@ -35,23 +36,25 @@ class GenerationLogicContainer {
     return this;
   }
 
-  setFakerSeed() {
-    this.faker.seed(this.seed);
-    return this;
-  }
-
   setErrorNumber(newValue: number) {
+    if (newValue > 10) return this;
     this.errorNumber = newValue
-    return this;
-  }
-
-  setPage(newValue: number) {
-    this.page = newValue;
     return this;
   }
 
   setSeed(newValue: number) {
     this.seed = newValue;
+    return this;
+  }
+
+  setFakerSeed(seed: number) {
+    if (seed === this.seed) return this;
+    this.faker.seed(this.seed);
+    return this;
+  }
+
+  setMathSeed() {
+    this.rand = seedRandom(this.seed.toString());
     return this;
   }
 
@@ -68,23 +71,109 @@ class GenerationLogicContainer {
       data.push({ fullName: fullName, fullAddress: city + " " + street + " " + house, phone: phone });
     }
 
-    this.recordGeneratedUsersCount(count, this.seed, this.country);
-    return data;
+    return this.introduceErrors(data);
+  }
+
+  getRandomNumber() {
+    const TEN_MILLION = 10 ** 7;
+    return parseInt((this.rand() * TEN_MILLION).toFixed(0), 10);
   }
 
   afterSeedOrCountryChange(newSeed: number, newCountry: GenerationCountry) {
     if (newSeed === this.seed && newCountry === this.country) return this;
-    console.log("seed or country changed!")
-    const generatedUsersCount = this.numberOfGeneratedUsersPerSeedAndCountry
-      .get(newSeed.toString() + newCountry) ?? 0;
+
+    const key = newSeed.toString() + newCountry;
+    const generatedUsersCount = this.numberOfGeneratedUsersPerSeedAndCountry.get(key) ?? 0;
 
     this.generateData(generatedUsersCount);
     return this;
   }
 
-  private recordGeneratedUsersCount(count: number, seed: number, country: GenerationCountry) {
+  recordGeneratedUsersCount(count: number, seed: number, country: GenerationCountry) {
     const currentValue = this.numberOfGeneratedUsersPerSeedAndCountry.get(seed.toString() + country) ?? 0;
     this.numberOfGeneratedUsersPerSeedAndCountry.set(seed.toString() + country, currentValue + count);
+  }
+
+  private determineIferrorShouldBeIntroduced(j: number) {
+    if (j + 1 > this.errorNumber && j + 1 !== this.errorNumber) {
+      const chanceOfError = this.errorNumber - (j + 1);
+      if (chanceOfError < this.rand()) return false;
+    }
+    return true;
+  }
+
+  private introduceErrors(data: GeneratedPersonData[]) {
+    const changedDataArray: GeneratedPersonData[] = [];
+
+    data.forEach(data => {
+      let changedData = data;
+      for (let j = 0; j < this.errorNumber; j++) {
+        const shouldIntroduceError = this.determineIferrorShouldBeIntroduced(j);
+        if (shouldIntroduceError) changedData = this.callRespectiveErrorIntroducingFunction(changedData);
+      }
+      changedDataArray.push(changedData);
+    });
+    return changedDataArray;
+  }
+
+  private callRespectiveErrorIntroducingFunction(data: GeneratedPersonData) {
+    const errorTypes: ErrorType[] = ["add", "delete", "swap"];
+    let changedData = data;
+    const currentErrorType = errorTypes[this.getRandomNumber() % 3];
+    switch (currentErrorType) {
+      case "add": changedData = this.introduceLetterAdditionError(changedData);
+        break;
+      case "delete":
+        changedData = this.introduceLetterDeletionError(changedData);
+        break;
+      case "swap":
+        changedData = this.introduceLetterSwappingError(changedData);
+        break;
+    }
+    return changedData;
+  }
+
+  private getDataFieldReady(data: GeneratedPersonData): [string[], ErrorLocation] {
+    const errorLocations: ErrorLocation[] = ["fullAddress", "fullName", "phone"];
+    const currentLocation = errorLocations[this.getRandomNumber() % 3];
+    const errorField = data[currentLocation];
+    const stringArr = errorField.split("");
+    return [stringArr, currentLocation];
+  }
+
+  private introduceLetterSwappingError(data: GeneratedPersonData): GeneratedPersonData {
+    const [stringArr, currentLocation] = this.getDataFieldReady(data);
+    const [index1, index2] = [this.getRandomNumber() % stringArr.length, this.getRandomNumber() % stringArr.length];
+    [stringArr[index1], stringArr[index2]] = [stringArr[index2], stringArr[index1]];
+    const newData = { ...data };
+    newData[currentLocation] = stringArr.join("");
+    return newData;
+  }
+
+  private introduceLetterAdditionError(data: GeneratedPersonData): GeneratedPersonData {
+    const generateRandomLetterOrNumber = () => {
+      const lettersAndNumbers = "abcdefghijklmnopqrstuvwxyz0123456789";
+      const randomIndex = this.getRandomNumber() % lettersAndNumbers.length;
+      return lettersAndNumbers[randomIndex];
+    };
+
+    const letterToAdd = generateRandomLetterOrNumber();
+    const [stringArr, currentLocation] = this.getDataFieldReady(data);
+    const index = this.getRandomNumber() % stringArr.length;
+    stringArr.splice(index, 0, letterToAdd);
+    const newData = { ...data };
+    newData[currentLocation] = stringArr.join("");
+
+    return newData;
+  }
+
+  private introduceLetterDeletionError(data: GeneratedPersonData): GeneratedPersonData {
+    const [stringArr, currentLocation] = this.getDataFieldReady(data);
+    const index = this.getRandomNumber() % stringArr.length;
+    stringArr.splice(index, 1);
+    const newData = { ...data };
+    newData[currentLocation] = stringArr.join("");
+    return newData;
   }
 
 }

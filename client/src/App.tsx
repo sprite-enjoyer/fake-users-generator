@@ -24,7 +24,7 @@ const App = () => {
       method: "GET"
     })
       .catch(e => console.error(e));
-  })
+  }, []);
 
   return (
     <Container css={{

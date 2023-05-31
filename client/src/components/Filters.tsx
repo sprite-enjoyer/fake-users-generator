@@ -97,15 +97,15 @@ const Filters = ({ filterState, dispatchFilterChange }: FiltersProps) => {
         labelLeft="Error Number:"
         aria-label="Error number"
         width="100%"
-        value={errorNumber}
+        value={errorNumber * 100}
         type={"number"}
-        onChange={(e) => setErrorNumber(parseFloat(e.target.value))}
+        onChange={(e) => setErrorNumber(parseFloat(e.target.value) / 100)}
       />
       <Input
         min={0}
         initialValue="0"
-        max={1000}
-        onChange={e => setErrorNumber(parseFloat(e.target.value) / 100)}
+        max={10}
+        onChange={e => setErrorNumber(prev => parseFloat(e.target.value))}
         size="xl"
         labelLeft={errorNumber.toString()}
         width="100%"

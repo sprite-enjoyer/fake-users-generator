@@ -1,11 +1,10 @@
 import { Container } from "@nextui-org/react";
 import DataTable from "./components/DataTable";
 import Filters from "./components/Filters";
-import { useReducer } from "react";
+import { useEffect, useReducer } from "react";
 import { FilterStateType, DispatchFilterActionType } from "./misc/types";
 
 const filterChangeReducer = (state: FilterStateType, action: DispatchFilterActionType) => {
-  console.log(action.payload.errorNumber)
   const newState = { ...state };
   const { seed, country, errorNumber } = action.payload;
 
@@ -19,6 +18,11 @@ const filterChangeReducer = (state: FilterStateType, action: DispatchFilterActio
 const App = () => {
   const [filterState, dispatchFilterChange] =
     useReducer(filterChangeReducer, { country: "Britain", seed: 0, errorNumber: 0 });
+
+  useEffect(() => {
+    fetch(`${import.meta.env.VITE_SERVER_URL}/reset`)
+      .catch(e => console.error(e));
+  })
 
   return (
     <Container css={{

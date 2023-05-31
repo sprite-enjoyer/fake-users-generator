@@ -38,8 +38,17 @@ const getRandomUsers = async (req: Request<any, any, GetRandomUsersRequestBodyTy
     .json({ message: "success", data: dataGenerator.generateData(20, true) });
 };
 
+const resetData = (req: Request, res: Response) => {
+  dataGenerator.resetData();
+
+  return res
+    .status(200)
+    .json({ message: "success" });
+
+}
+
 
 
 app.post("/getRandomUsers", getRandomUsers);
-
+app.purge("/reset", resetData);
 

@@ -22,6 +22,15 @@ class GenerationLogicContainer {
     return this;
   }
 
+  resetData() {
+    this.country = "Britain";
+    this.faker = fakerEN_GB;
+    this.seed = 0;
+    this.ID = 1;
+    this.rand = seedRandom("0");
+    this.numberOfGeneratedUsersPerSeedAndCountry = new Map<string, number>();
+  }
+
   setFakerByCountry(country: GenerationCountry) {
     if (this.country === country) return this;
     switch (country) {

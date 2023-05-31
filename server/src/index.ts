@@ -39,7 +39,8 @@ const getRandomUsers = async (req: Request<any, any, GetRandomUsersRequestBodyTy
 };
 
 const resetData = (req: Request, res: Response) => {
-  dataGenerator = new GenerationLogicContainer();
+  const temp = new GenerationLogicContainer();
+  dataGenerator = temp;
 
   return res
     .status(200)

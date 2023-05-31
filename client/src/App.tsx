@@ -21,7 +21,9 @@ const App = () => {
 
   useEffect(() => {
     const resetData = async () =>
-      await fetch(`${import.meta.env.VITE_SERVER_URL}/reset`, { keepalive: true, method: "GET" });
+      await fetch(`${import.meta.env.VITE_SERVER_URL}/reset`, { keepalive: true, method: "GET" })
+        .then(async res => await res.json())
+        .catch(e => console.error(e));
 
     resetData();
   }, []);

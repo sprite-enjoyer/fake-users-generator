@@ -104,8 +104,8 @@ const Filters = ({ filterState, dispatchFilterChange }: FiltersProps) => {
       <Input
         min={0}
         initialValue="0"
-        max={10}
-        onChange={e => setErrorNumber(parseFloat(e.target.value))}
+        max={1000}
+        onChange={e => setErrorNumber(parseFloat(e.target.value) / 100)}
         size="xl"
         labelLeft={errorNumber.toString()}
         width="100%"

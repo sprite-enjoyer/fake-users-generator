@@ -64,16 +64,16 @@ const DataTable = ({ state }: DataTableProps) => {
           items={list.items}
           loadingState={list.loadingState}
           onLoadMore={list.loadMore}
-          css={{}}
         >
           {
-            (item) =>
+            list.items.map((item, i) =>
               <Table.Row key={v4()}>
-                <Table.Cell><Text>{item.ID}</Text></Table.Cell>
+                <Table.Cell><Text>{i + 1}</Text></Table.Cell>
                 <Table.Cell><Text>{item.fullName}</Text></Table.Cell>
                 <Table.Cell><Text>{item.fullAddress}</Text></Table.Cell>
                 <Table.Cell><Text>{item.phone}</Text></Table.Cell>
               </Table.Row>
+            )
           }
         </Table.Body>
       </Table>

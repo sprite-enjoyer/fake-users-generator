@@ -20,10 +20,10 @@ const App = () => {
     useReducer(filterChangeReducer, { country: "Britain", seed: 0, errorNumber: 0 });
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_SERVER_URL}/reset`, {
-      method: "GET"
-    })
-      .catch(e => console.error(e));
+    const resetData = async () =>
+      await fetch(`${import.meta.env.VITE_SERVER_URL}/reset`, { keepalive: true, method: "GET" });
+
+    resetData();
   }, []);
 
   return (

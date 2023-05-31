@@ -20,7 +20,9 @@ const App = () => {
     useReducer(filterChangeReducer, { country: "Britain", seed: 0, errorNumber: 0 });
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_SERVER_URL}/reset`)
+    fetch(`${import.meta.env.VITE_SERVER_URL}/reset`, {
+      method: "PURGE"
+    })
       .catch(e => console.error(e));
   })
 

@@ -13,7 +13,7 @@ app.use(bodyParser.json());
 app.use(express.json());
 const PORT = 4000;
 
-export const dataGenerator = new GenerationLogicContainer();
+export let dataGenerator = new GenerationLogicContainer();
 
 app.listen(PORT, () => {
   console.log("Express server started! 🚀");
@@ -39,12 +39,11 @@ const getRandomUsers = async (req: Request<any, any, GetRandomUsersRequestBodyTy
 };
 
 const resetData = (req: Request, res: Response) => {
-  dataGenerator.resetData();
+  dataGenerator = new GenerationLogicContainer();
 
   return res
     .status(200)
     .json({ message: "success" });
-
 }
 
 

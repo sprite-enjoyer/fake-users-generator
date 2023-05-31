@@ -1,6 +1,7 @@
-import { fakerDE, fakerFR, fakerEN_GB, Faker } from '@faker-js/faker';
+import { fakerDE, fakerFR, fakerEN_GB, Faker, fakerEN } from '@faker-js/faker';
 import { ErrorLocation, ErrorType, GeneratedPersonData, GenerationCountry } from "../types";
 import seedRandom from "seedrandom";
+import seedrandom from 'seedrandom';
 class GenerationLogicContainer {
 
   country: GenerationCountry = "Britain";
@@ -16,6 +17,16 @@ class GenerationLogicContainer {
   rand = seedRandom("0");
 
   numberOfGeneratedUsersPerSeedAndCountry: Map<string, number> = new Map();
+
+  constructor() {
+    this.country = "Britain";
+    this.faker = fakerEN_GB;
+    this.errorNumber = 0;
+    this.seed = 0;
+    this.ID = 1;
+    this.rand = seedrandom("0");
+    this.numberOfGeneratedUsersPerSeedAndCountry = new Map();
+  }
 
   setCountry(newValue: GenerationCountry) {
     this.country = newValue;
@@ -39,7 +50,7 @@ class GenerationLogicContainer {
   }
 
   setErrorNumber(newValue: number) {
-    if (newValue > 10) return this;
+    if (newValue > 10 || newValue < 0) return this;
     this.errorNumber = newValue
     return this;
   }

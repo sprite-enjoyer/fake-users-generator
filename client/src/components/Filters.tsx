@@ -90,7 +90,7 @@ const Filters = ({ filterState, dispatchFilterChange }: FiltersProps) => {
         aria-label="Seed"
         width="100%"
         value={seed}
-        onChange={(e) => { setSeed(parseInt(e.target.value)); console.log(e.target.value) }}
+        onChange={(e) => { setSeed(parseFloat(e.target.value)); console.log(e.target.value) }}
       />
       <Input
         size="xl"
@@ -99,13 +99,13 @@ const Filters = ({ filterState, dispatchFilterChange }: FiltersProps) => {
         width="100%"
         value={errorNumber}
         type={"number"}
-        onChange={(e) => setErrorNumber(parseInt(e.target.value))}
+        onChange={(e) => setErrorNumber(parseFloat(e.target.value))}
       />
       <Input
         min={0}
         initialValue="0"
         max={10}
-        onChange={e => setErrorNumber(parseInt(e.target.value))}
+        onChange={e => setErrorNumber(parseFloat(e.target.value))}
         size="xl"
         labelLeft={errorNumber.toString()}
         width="100%"

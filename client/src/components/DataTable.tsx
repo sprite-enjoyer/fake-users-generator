@@ -10,7 +10,7 @@ const mainDivStyle: CSSProperties = {
   alignItems: "center",
   flexDirection: "column",
   paddingBottom: "50px",
-  height: "80%",
+  height: "100%",
   overflow: "auto",
 };
 

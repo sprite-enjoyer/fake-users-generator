@@ -50,5 +50,5 @@ const resetData = (req: Request, res: Response) => {
 
 
 app.post("/getRandomUsers", getRandomUsers);
-app.purge("/reset", resetData);
+app.get("/reset", resetData);
 

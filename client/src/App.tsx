@@ -21,7 +21,7 @@ const App = () => {
 
   useEffect(() => {
     fetch(`${import.meta.env.VITE_SERVER_URL}/reset`, {
-      method: "PURGE"
+      method: "GET"
     })
       .catch(e => console.error(e));
   })

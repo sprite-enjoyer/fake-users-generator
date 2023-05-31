@@ -19,7 +19,6 @@ export interface DataTableProps {
 }
 
 const DataTable = ({ state }: DataTableProps) => {
-  console.log("rerender!")
 
   const list = useAsyncList<GeneratedPersonData>({
     async load({ signal, cursor }) {
@@ -32,20 +31,17 @@ const DataTable = ({ state }: DataTableProps) => {
       })
         .then(async res => await res.json())
         .catch(err => console.error(err)) as { message: string, data: GeneratedPersonData[] };
-      return {
-        items: response.data.map((data, i) => { return { ...data, index: i } }),
-        cursor: url,
-      };
+      return { items: response.data, cursor: url };
     }
   });
 
   return (
     <div style={mainDivStyle}>
-      <Table css={tableCss}>
+      <Table css={tableCss} aria-label="users list">
         <Table.Header>
           <Table.Column>
             <Text>
-              Index
+              ID
             </Text>
           </Table.Column>
           <Table.Column>
@@ -70,13 +66,14 @@ const DataTable = ({ state }: DataTableProps) => {
           onLoadMore={list.loadMore}
           css={{}}
         >
-          {(item) =>
-            <Table.Row key={v4()}>
-              <Table.Cell><Text>{0}</Text></Table.Cell>
-              <Table.Cell><Text>{item.fullName}</Text></Table.Cell>
-              <Table.Cell><Text>{item.fullAddress}</Text></Table.Cell>
-              <Table.Cell><Text>{item.phone}</Text></Table.Cell>
-            </Table.Row>
+          {
+            (item) =>
+              <Table.Row key={v4()}>
+                <Table.Cell><Text>{item.ID}</Text></Table.Cell>
+                <Table.Cell><Text>{item.fullName}</Text></Table.Cell>
+                <Table.Cell><Text>{item.fullAddress}</Text></Table.Cell>
+                <Table.Cell><Text>{item.phone}</Text></Table.Cell>
+              </Table.Row>
           }
         </Table.Body>
       </Table>

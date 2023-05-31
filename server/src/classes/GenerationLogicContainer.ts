@@ -11,6 +11,8 @@ class GenerationLogicContainer {
 
   seed = 0;
 
+  ID = 1;
+
   rand = seedRandom("0");
 
   numberOfGeneratedUsersPerSeedAndCountry: Map<string, number> = new Map();
@@ -58,7 +60,7 @@ class GenerationLogicContainer {
     return this;
   }
 
-  generateData(count: number): GeneratedPersonData[] {
+  generateData(count: number, isRealData: boolean): GeneratedPersonData[] {
     const data = [];
 
     for (let i = 0; i < count; i++) {
@@ -67,8 +69,8 @@ class GenerationLogicContainer {
       const street = this.faker.location.street();
       const house = this.faker.location.buildingNumber();
       const phone = this.faker.phone.number();
-
-      data.push({ fullName: fullName, fullAddress: city + " " + street + " " + house, phone: phone });
+      data.push({ ID: this.ID, fullName: fullName, fullAddress: city + " " + street + " " + house, phone: phone });
+      if (isRealData) this.ID++;
     }
 
     return this.introduceErrors(data);
@@ -85,7 +87,8 @@ class GenerationLogicContainer {
     const key = newSeed.toString() + newCountry;
     const generatedUsersCount = this.numberOfGeneratedUsersPerSeedAndCountry.get(key) ?? 0;
 
-    this.generateData(generatedUsersCount);
+    this.generateData(generatedUsersCount, false);
+    this.ID -= generatedUsersCount;
     return this;
   }
 

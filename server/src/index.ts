@@ -21,6 +21,7 @@ app.listen(PORT, () => {
 
 const getRandomUsers = async (req: Request<any, any, GetRandomUsersRequestBodyType>, res: Response) => {
   const { country, errorNumber, seed } = req.body;
+  console.log(req.body);
 
   dataGenerator
     .setFakerByCountry(country)
@@ -34,7 +35,7 @@ const getRandomUsers = async (req: Request<any, any, GetRandomUsersRequestBodyTy
 
   return res
     .status(200)
-    .json({ message: "success", data: dataGenerator.generateData(20) });
+    .json({ message: "success", data: dataGenerator.generateData(20, true) });
 };
 
 

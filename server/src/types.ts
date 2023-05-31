@@ -5,6 +5,7 @@ export interface GeneratedPersonData {
   fullName: string,
   phone: string,
   fullAddress: string,
+  ID: number,
 }
 
 export interface GetRandomUsersRequestBodyType {

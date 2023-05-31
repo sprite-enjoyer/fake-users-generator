@@ -2,7 +2,7 @@ export interface GeneratedPersonData {
   fullName: string,
   phone: string,
   fullAddress: string,
-  index: number,
+  ID: number,
 };
 
 export type FilterStateType = { country: string, seed: number, errorNumber: number };

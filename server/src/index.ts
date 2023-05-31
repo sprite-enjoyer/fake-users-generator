@@ -4,10 +4,15 @@ import cors from "cors";
 import bodyParser from "body-parser";
 import GenerationLogicContainer from "./classes/GenerationLogicContainer";
 import { GetRandomUsersRequestBodyType } from "./types";
+import { Server } from "socket.io";
+import { EventEmitter } from "node:events";
+import http from "http";
 
 dotenv.config();
 
 const app = express();
+const server = http.createServer(app);
+const io = new Server(server);
 app.use(cors());
 app.use(bodyParser.json());
 app.use(express.json());
@@ -15,7 +20,7 @@ const PORT = 4000;
 
 export let dataGenerator = new GenerationLogicContainer();
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log("Express server started! 🚀");
 });
 
@@ -38,16 +43,11 @@ const getRandomUsers = async (req: Request<any, any, GetRandomUsersRequestBodyTy
     .json({ message: "success", data: dataGenerator.generateData(20, true) });
 };
 
-const resetData = (req: Request, res: Response) => {
-  dataGenerator = new GenerationLogicContainer();
+io.on("connection", (socket) => {
 
-  return res
-    .status(200)
-    .json({ message: "success" });
-}
-
-
+  socket.on('disconnect', () => {
+    dataGenerator = new GenerationLogicContainer();
+  });
+});
 
 app.post("/getRandomUsers", getRandomUsers);
-app.get("/reset", resetData, () => console.log("data reset request!"));
-

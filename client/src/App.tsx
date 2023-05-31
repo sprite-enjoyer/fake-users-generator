@@ -1,8 +1,9 @@
-import { CSS, Container, Loading } from "@nextui-org/react";
+import { CSS, Container } from "@nextui-org/react";
 import DataTable from "./components/DataTable";
 import Filters from "./components/Filters";
-import { useEffect, useReducer, useState } from "react";
+import { useEffect, useReducer } from "react";
 import { FilterStateType, DispatchFilterActionType } from "./misc/types";
+import { io } from "socket.io-client";
 
 const baseContainerCss: CSS = {
   gap: "20px",
@@ -32,23 +33,22 @@ const filterChangeReducer = (state: FilterStateType, action: DispatchFilterActio
 const App = () => {
   const [filterState, dispatchFilterChange] =
     useReducer(filterChangeReducer, { country: "Britain", seed: 0, errorNumber: 0 });
-  const [loading, setLoading] = useState(false);
-  const [response, setResponse] = useState("");
 
   useEffect(() => {
-    setLoading(true);
-    const resetData = async () =>
-      await fetch(`${import.meta.env.VITE_SERVER_URL}/reset`, { keepalive: true, method: "GET", })
-        .then(async res => setResponse(await res.json()))
-        .catch(e => console.error(e));
-    resetData();
-  }, []);
+    const socket = io(import.meta.env.VITE_SERVER_URL);
 
-  if (loading && response.length === 0) return (
-    <Container css={baseContainerCss} >
-      <Loading size="lg" />
-    </Container>
-  );
+    socket.on('connect', () => {
+      console.log('Connected to the server.');
+    });
+
+    socket.on('disconnect', () => {
+      console.log('Disconnected from the server.');
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
 
   return (
     <Container css={baseContainerCss}>

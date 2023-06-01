@@ -41,7 +41,7 @@ export interface FiltersProps {
 }
 
 const Filters = ({ filterState, dispatchFilterChange }: FiltersProps) => {
-  const [errorNumber, setErrorNumber] = useState(0);
+  const [errorNumber, setErrorNumber] = useState(1);
   const [seed, setSeed] = useState(0);
 
   return (

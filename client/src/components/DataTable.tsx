@@ -3,6 +3,8 @@ import { CSSProperties } from "react";
 import { FilterStateType, GeneratedPersonData } from "../misc/types";
 import { v4 } from "uuid";
 import { useAsyncList } from "@nextui-org/react";
+import { ResetStatusContext } from "../App";
+import { useContext } from "react";
 
 const tableCss: CSS = { overflow: "auto", height: "700px" };
 const mainDivStyle: CSSProperties = {
@@ -20,9 +22,13 @@ export interface DataTableProps {
 
 const DataTable = ({ state }: DataTableProps) => {
 
+  const resetStatusContext = useContext(ResetStatusContext);
+
   const list = useAsyncList<GeneratedPersonData>({
     async load({ signal, cursor }) {
       const url = cursor || `${import.meta.env.VITE_SERVER_URL}/getRandomUsers`;
+      if (!resetStatusContext) return { items: [], cursor: url };
+
       const response = await fetch(url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -63,7 +69,7 @@ const DataTable = ({ state }: DataTableProps) => {
         <Table.Body
           items={list.items}
           loadingState={list.loadingState}
-          onLoadMore={list.loadMore}
+          onLoadMore={resetStatusContext ? list.loadMore : undefined}
         >
           {
             list.items.map((item, i) =>

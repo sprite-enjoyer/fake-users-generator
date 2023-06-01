@@ -13,7 +13,7 @@ app.use(bodyParser.json());
 app.use(express.json());
 const PORT = 4000;
 
-export let dataGenerator = new GenerationLogicContainer();
+const dataGenerator = new GenerationLogicContainer();
 
 app.listen(PORT, () => {
   console.log("Express server started! 🚀");
@@ -32,30 +32,18 @@ const getRandomUsers = async (req: Request<any, any, GetRandomUsersRequestBodyTy
     .setMathSeed()
     .recordGeneratedUsersCount(20, seed, country);
 
-  const forTesting = () => {
-    const { country, seed, errorNumber } = dataGenerator;
-    console.log(country, seed, errorNumber);
-  };
-
-  forTesting();
-
-  const result = dataGenerator.generateData(20, true);
-  console.log(result[0]);
-
   return res
     .status(200)
-    .json({ message: "success", data: result });
+    .json({ message: "success", data: dataGenerator.generateData(20, true) });
 };
 
 const resetData = (req: Request, res: Response) => {
-  const temp = new GenerationLogicContainer();
-  dataGenerator = temp;
+  dataGenerator.reset();
 
   return res
     .status(200)
     .json({ message: "success" });
-}
+};
 
 app.post("/getRandomUsers", getRandomUsers);
 app.get("/reset", resetData, () => console.log("data reset request!"));
-

@@ -1,16 +1,23 @@
-import { fakerDE, fakerFR, fakerEN_GB, Faker, fakerEN } from '@faker-js/faker';
+import { fakerDE, fakerFR, fakerEN_GB, Faker } from '@faker-js/faker';
 import { ErrorLocation, ErrorType, GeneratedPersonData, GenerationCountry } from "../types";
 import seedRandom from "seedrandom";
 import seedrandom from 'seedrandom';
+
 class GenerationLogicContainer {
 
   country: GenerationCountry = "Britain";
 
-  faker: Faker = fakerEN_GB;
+  currentFaker: Faker = fakerEN_GB;
+
+  private fakerBritain: Faker = this.currentFaker;
+
+  private fakerFrance = fakerFR;
+
+  private fakerGermany = fakerDE;
 
   errorNumber = 0;
 
-  seed = 0;
+  seed = 1;
 
   ID = 1;
 
@@ -18,9 +25,17 @@ class GenerationLogicContainer {
 
   numberOfGeneratedUsersPerSeedAndCountry: Map<string, number> = new Map();
 
-  constructor() {
+  setCountry(newValue: GenerationCountry) {
+    this.country = newValue;
+    return this;
+  }
+
+  reset() {
     this.country = "Britain";
-    this.faker = fakerEN_GB;
+    this.currentFaker = this.fakerBritain;
+    this.fakerBritain = fakerEN_GB;
+    this.fakerFrance = fakerFR;
+    this.fakerGermany = fakerDE;
     this.errorNumber = 0;
     this.seed = 0;
     this.ID = 1;
@@ -28,22 +43,17 @@ class GenerationLogicContainer {
     this.numberOfGeneratedUsersPerSeedAndCountry = new Map();
   }
 
-  setCountry(newValue: GenerationCountry) {
-    this.country = newValue;
-    return this;
-  }
-
   setFakerByCountry(country: GenerationCountry) {
     if (this.country === country) return this;
     switch (country) {
       case "Britain":
-        this.faker = fakerEN_GB;
+        this.currentFaker = this.fakerBritain;
         break;
       case "France":
-        this.faker = fakerFR;
+        this.currentFaker = this.fakerFrance;
         break;
       case "Germany":
-        this.faker = fakerDE;
+        this.currentFaker = this.fakerGermany;
         break;
     }
     return this;
@@ -62,7 +72,7 @@ class GenerationLogicContainer {
 
   setFakerSeed(seed: number) {
     if (seed === this.seed) return this;
-    this.faker.seed(this.seed);
+    this.doForAllFakers((faker) => faker.seed(this.seed));
     return this;
   }
 
@@ -75,15 +85,14 @@ class GenerationLogicContainer {
     const data = [];
 
     for (let i = 0; i < count; i++) {
-      const fullName = this.faker.person.fullName();
-      const city = this.faker.location.city();
-      const street = this.faker.location.street();
-      const house = this.faker.location.buildingNumber();
-      const phone = this.faker.phone.number();
+      const fullName = this.currentFaker.person.fullName();
+      const city = this.currentFaker.location.city();
+      const street = this.currentFaker.location.street();
+      const house = this.currentFaker.location.buildingNumber();
+      const phone = this.currentFaker.phone.number();
       data.push({ ID: this.ID, fullName: fullName, fullAddress: city + " " + street + " " + house, phone: phone });
       if (isRealData) this.ID++;
     }
-
     return this.introduceErrors(data);
   }
 
@@ -97,10 +106,16 @@ class GenerationLogicContainer {
 
     const key = newSeed.toString() + newCountry;
     const generatedUsersCount = this.numberOfGeneratedUsersPerSeedAndCountry.get(key) ?? 0;
-
+    console.log(key, generatedUsersCount);
     this.generateData(generatedUsersCount, false);
-    this.ID -= generatedUsersCount;
     return this;
+  }
+
+  doForAllFakers(cb: (faker: Faker) => void) {
+    cb(this.currentFaker);
+    cb(this.fakerBritain);
+    cb(this.fakerFrance);
+    cb(this.fakerGermany);
   }
 
   recordGeneratedUsersCount(count: number, seed: number, country: GenerationCountry) {

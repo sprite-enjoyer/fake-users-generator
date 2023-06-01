@@ -31,7 +31,7 @@ export const ResetStatusContext = createContext(false);
 
 const App = () => {
   const [filterState, dispatchFilterChange] =
-    useReducer(filterChangeReducer, { country: "Britain", seed: 0, errorNumber: 0 });
+    useReducer(filterChangeReducer, { country: "Britain", seed: 1, errorNumber: 0 });
   const [resetStatus, setResetStatus] = useState(false);
 
   useEffect(() => {

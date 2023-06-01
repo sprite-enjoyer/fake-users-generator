@@ -1,5 +1,5 @@
-import { Button, CSS, Card, Dropdown, FormElement, Input, Text } from "@nextui-org/react"
-import { Dispatch, KeyboardEventHandler, useState } from "react";
+import { Button, CSS, Card, Dropdown, Input, Text } from "@nextui-org/react"
+import { Dispatch, useState } from "react";
 import { DispatchFilterActionType, FilterStateType } from "../misc/types";
 
 const textCss: CSS = { width: "100%", fontSize: "1.5em", fontWeight: "400", fontFamily: "inherit" };
@@ -97,15 +97,15 @@ const Filters = ({ filterState, dispatchFilterChange }: FiltersProps) => {
         labelLeft="Error Number:"
         aria-label="Error number"
         width="100%"
-        value={errorNumber * 100}
+        value={errorNumber}
         type={"number"}
-        onChange={(e) => setErrorNumber(parseFloat(e.target.value) / 100)}
+        onChange={(e) => setErrorNumber(parseFloat(e.target.value))}
       />
       <Input
         min={0}
         initialValue="0"
-        max={10}
-        onChange={e => setErrorNumber(prev => parseFloat(e.target.value))}
+        max={1000}
+        onChange={e => setErrorNumber(parseFloat(e.target.value))}
         size="xl"
         labelLeft={errorNumber.toString()}
         width="100%"

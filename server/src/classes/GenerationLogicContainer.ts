@@ -61,7 +61,7 @@ class GenerationLogicContainer {
   }
 
   setErrorNumber(newValue: number) {
-    if (newValue > 10 || newValue < 0) return this;
+    if (newValue > 1000 || newValue < 0) return this;
     this.errorNumber = newValue
     return this;
   }

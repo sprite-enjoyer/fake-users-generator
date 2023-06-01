@@ -20,6 +20,7 @@ const App = () => {
     useReducer(filterChangeReducer, { country: "Britain", seed: 0, errorNumber: 0 });
 
   useEffect(() => {
+    window.addEventListener("unload", () => { navigator.sendBeacon(`${import.meta.env.VITE_SERVER_UTL}/reset`) });
     const resetData = async () =>
       await fetch(`${import.meta.env.VITE_SERVER_URL}/reset`, { keepalive: true, method: "GET" })
         .then(async res => await res.json())

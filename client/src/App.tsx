@@ -21,6 +21,7 @@ const App = () => {
 
   useEffect(() => {
     window.addEventListener("unload", () => { navigator.sendBeacon(`${import.meta.env.VITE_SERVER_UTL}/reset`) });
+    window.addEventListener("load", () => navigator.sendBeacon(`${import.meta.env.VITE_SERVER_URL}/reload`));
     const resetData = async () =>
       await fetch(`${import.meta.env.VITE_SERVER_URL}/reset`, { keepalive: true, method: "GET" })
         .then(async res => await res.json())

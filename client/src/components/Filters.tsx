@@ -116,7 +116,7 @@ const Filters = ({ filterState, dispatchFilterChange }: FiltersProps) => {
         flat
         size={"lg"}
         css={{ ...bigButtonCss, marginTop: "20px" }}
-        onClick={() => dispatchFilterChange({ payload: { seed: seed, errorNumber: errorNumber } })}
+        onPress={() => dispatchFilterChange({ payload: { seed: seed, errorNumber: errorNumber } })}
       >
         Apply Filters
       </Button>
@@ -129,15 +129,15 @@ const Filters = ({ filterState, dispatchFilterChange }: FiltersProps) => {
         alignItems: "flex-start",
         flexDirection: "column"
       }} >
-        <Text css={{ fontSize: "1.5em" }} >
-          Error number: {filterState.errorNumber}
-        </Text>
-        <Text css={{ fontSize: "1.5em" }}>
-          Seed: {filterState.seed}
-        </Text>
-        <Text css={{ fontSize: "1.5em" }}>
+        <span style={{ fontSize: "1.5em" }} >
+          Error number: {filterState.errorNumber.toString()}
+        </span>
+        <span style={{ fontSize: "1.5em" }}>
+          Seed: {filterState.seed.toString()}
+        </span>
+        <span style={{ fontSize: "1.5em" }}>
           Country: {filterState.country}
-        </Text>
+        </span>
       </Card>
     </Card >
   );

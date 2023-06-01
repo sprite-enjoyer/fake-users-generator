@@ -37,10 +37,11 @@ class GenerationLogicContainer {
     this.fakerFrance = fakerFR;
     this.fakerGermany = fakerDE;
     this.errorNumber = 0;
-    this.seed = 0;
+    this.doForAllFakers(faker => faker.seed(1));
+    this.seed = 1;
     this.ID = 1;
-    this.rand = seedrandom("0");
-    this.numberOfGeneratedUsersPerSeedAndCountry = new Map();
+    this.rand = seedrandom("1");
+    this.numberOfGeneratedUsersPerSeedAndCountry.clear();
   }
 
   setFakerByCountry(country: GenerationCountry) {

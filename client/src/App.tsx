@@ -24,8 +24,9 @@ const filterChangeReducer = (state: FilterStateType, action: DispatchFilterActio
   if (errorNumber?.toString()) (errorNumber > 0 && errorNumber <= 1000) ? newState.errorNumber = errorNumber : undefined;
   if (seed?.toString()) newState.seed = seed;
 
-  if (!seed) newState.seed = 0;
-  if (!errorNumber) newState.errorNumber = 0;
+  if (!newState.seed) newState.seed = 0;
+  if (!newState.errorNumber) newState.errorNumber = 0;
+  if (!newState.country) newState.country = "Britain";
 
   return newState;
 };

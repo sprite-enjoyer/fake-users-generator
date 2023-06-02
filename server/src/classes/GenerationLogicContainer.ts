@@ -69,8 +69,7 @@ class GenerationLogicContainer {
   }
 
   setFakerSeed(seed: number) {
-    if (seed === this.seed) return this;
-    this.doForAllFakers((faker) => faker.seed(this.seed));
+    this.doForAllFakers((faker) => faker.seed(seed));
     return this;
   }
 

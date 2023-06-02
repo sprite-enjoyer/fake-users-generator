@@ -21,7 +21,13 @@ const filterChangeReducer = (state: FilterStateType, action: DispatchFilterActio
   const { seed, country, errorNumber } = action.payload;
 
   if (country?.toString()) newState.country = country;
-  if (errorNumber?.toString() && errorNumber > -1 && errorNumber <= 1000) newState.errorNumber = errorNumber;
+  if (
+    !isNaN(errorNumber ?? NaN) &&
+    errorNumber !== undefined &&
+    errorNumber > -1 &&
+    errorNumber <= 1000
+  ) newState.errorNumber = errorNumber;
+
   if (seed?.toString()) newState.seed = seed;
 
   if (!newState.seed) newState.seed = 0;

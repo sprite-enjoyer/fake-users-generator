@@ -96,7 +96,7 @@ const Filters = ({ filterState, dispatchFilterChange }: FiltersProps) => {
         aria-label="Error number"
         width="100%"
         value={filterState.errorNumber.toString()}
-        type={"number"}
+        type="number"
         onChange={e => dispatchFilterChange({ payload: { errorNumber: (parseFloat(e.target.value)) } })}
       />
       <Input

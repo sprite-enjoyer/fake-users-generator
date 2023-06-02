@@ -19,7 +19,6 @@ const containerCss: CSS = {
 const filterChangeReducer = (state: FilterStateType, action: DispatchFilterActionType) => {
   const newState = { ...state };
   const { seed, country, errorNumber } = action.payload;
-  console.log(errorNumber, "from filterChangeReducer, before!");
 
   if (country?.toString()) newState.country = country;
   if (
@@ -30,12 +29,10 @@ const filterChangeReducer = (state: FilterStateType, action: DispatchFilterActio
   ) newState.errorNumber = errorNumber;
 
   if (seed?.toString()) newState.seed = seed;
-  console.log(errorNumber, "from filterChangeReducer, after 1!");
 
   if (!newState.seed) newState.seed = 0;
   if (!newState.errorNumber || isNaN(errorNumber ?? NaN)) newState.errorNumber = 0;
   if (!newState.country) newState.country = "Britain";
-  console.log(errorNumber, "from filterChangeReducer, after 2!");
 
   return newState;
 };

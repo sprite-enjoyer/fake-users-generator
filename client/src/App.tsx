@@ -33,7 +33,7 @@ const filterChangeReducer = (state: FilterStateType, action: DispatchFilterActio
   console.log(errorNumber, "from filterChangeReducer, after 1!");
 
   if (!newState.seed) newState.seed = 0;
-  if (!newState.errorNumber) newState.errorNumber = 0;
+  if (!newState.errorNumber || isNaN(newState.errorNumber)) newState.errorNumber = 0;
   if (!newState.country) newState.country = "Britain";
   console.log(errorNumber, "from filterChangeReducer, after 2!");
 

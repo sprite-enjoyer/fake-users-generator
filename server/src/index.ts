@@ -21,16 +21,18 @@ app.listen(PORT, () => {
 
 const getRandomUsers = async (req: Request<any, any, GetRandomUsersRequestBodyType>, res: Response) => {
   const { country, errorNumber, seed } = req.body;
+  console.log(req.body)
+
+  if (isNaN(errorNumber) || isNaN(seed)) return res.status(400).json({ message: "NaN value not accepted", data: [] });
+  if (seed === undefined || seed === null) return res.status(400).json({ message: "invalid seed", data: [] });
 
   dataGenerator
     .setFakerByCountry(country)
     .setFakerSeed(seed)
-    .afterSeedOrCountryChange(seed, country)
     .setErrorNumber(errorNumber)
     .setCountry(country)
     .setSeed(seed)
     .setMathSeed()
-    .recordGeneratedUsersCount(20, seed, country);
 
   return res
     .status(200)
@@ -39,7 +41,6 @@ const getRandomUsers = async (req: Request<any, any, GetRandomUsersRequestBodyTy
 
 const resetData = (req: Request, res: Response) => {
   dataGenerator.reset();
-
   return res
     .status(200)
     .json({ message: "success" });

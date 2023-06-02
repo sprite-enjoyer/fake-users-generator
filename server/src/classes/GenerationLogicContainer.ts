@@ -23,8 +23,6 @@ class GenerationLogicContainer {
 
   rand = seedRandom("0");
 
-  numberOfGeneratedUsersPerSeedAndCountry: Map<string, number> = new Map();
-
   setCountry(newValue: GenerationCountry) {
     this.country = newValue;
     return this;
@@ -41,7 +39,6 @@ class GenerationLogicContainer {
     this.seed = 1;
     this.ID = 1;
     this.rand = seedrandom("1");
-    this.numberOfGeneratedUsersPerSeedAndCountry.clear();
   }
 
   setFakerByCountry(country: GenerationCountry) {
@@ -102,26 +99,10 @@ class GenerationLogicContainer {
     return parseInt((this.rand() * TEN_MILLION).toFixed(0), 10);
   }
 
-  afterSeedOrCountryChange(newSeed: number, newCountry: GenerationCountry) {
-    if (newSeed === this.seed && newCountry === this.country) return this;
-
-    const key = newSeed.toString() + newCountry;
-    const generatedUsersCount = this.numberOfGeneratedUsersPerSeedAndCountry.get(key) ?? 0;
-    console.log(key, generatedUsersCount);
-    this.generateData(generatedUsersCount, false);
-    return this;
-  }
-
   doForAllFakers(cb: (faker: Faker) => void) {
-    cb(this.currentFaker);
     cb(this.fakerBritain);
     cb(this.fakerFrance);
     cb(this.fakerGermany);
-  }
-
-  recordGeneratedUsersCount(count: number, seed: number, country: GenerationCountry) {
-    const currentValue = this.numberOfGeneratedUsersPerSeedAndCountry.get(seed.toString() + country) ?? 0;
-    this.numberOfGeneratedUsersPerSeedAndCountry.set(seed.toString() + country, currentValue + count);
   }
 
   private determineIferrorShouldBeIntroduced(j: number) {

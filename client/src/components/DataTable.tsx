@@ -1,5 +1,5 @@
 import { CSS, Table, Text } from "@nextui-org/react";
-import { CSSProperties } from "react";
+import { CSSProperties, useEffect } from "react";
 import { FilterStateType, GeneratedPersonData } from "../misc/types";
 import { v4 } from "uuid";
 import { useAsyncList } from "@nextui-org/react";
@@ -22,12 +22,12 @@ export interface DataTableProps {
 
 const DataTable = ({ state }: DataTableProps) => {
 
-  const resetStatusContext = useContext(ResetStatusContext);
+  const didServerReset = useContext(ResetStatusContext);
 
   const list = useAsyncList<GeneratedPersonData>({
     async load({ signal, cursor }) {
       const url = cursor || `${import.meta.env.VITE_SERVER_URL}/getRandomUsers`;
-      if (!resetStatusContext) return { items: [], cursor: url };
+      if (!didServerReset) return { items: [], cursor: url };
 
       const response = await fetch(url, {
         method: "POST",
@@ -40,6 +40,10 @@ const DataTable = ({ state }: DataTableProps) => {
       return { items: response.data, cursor: url };
     }
   });
+
+  useEffect(() => {
+    list.reload();
+  }, [state]);
 
   return (
     <div style={mainDivStyle}>
@@ -69,7 +73,7 @@ const DataTable = ({ state }: DataTableProps) => {
         <Table.Body
           items={list.items}
           loadingState={list.loadingState}
-          onLoadMore={resetStatusContext ? list.loadMore : undefined}
+          onLoadMore={didServerReset ? list.loadMore : undefined}
         >
           {
             list.items.map((item, i) =>

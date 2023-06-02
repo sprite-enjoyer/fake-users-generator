@@ -1,5 +1,5 @@
 import { Button, CSS, Card, Dropdown, Input, Text } from "@nextui-org/react"
-import { Dispatch, useState } from "react";
+import { Dispatch, useMemo, useState } from "react";
 import { DispatchFilterActionType, FilterStateType } from "../misc/types";
 
 const textCss: CSS = { width: "100%", fontSize: "1.5em", fontWeight: "400", fontFamily: "inherit" };
@@ -41,8 +41,6 @@ export interface FiltersProps {
 }
 
 const Filters = ({ filterState, dispatchFilterChange }: FiltersProps) => {
-  const [errorNumber, setErrorNumber] = useState(0);
-  const [seed, setSeed] = useState(1);
 
   return (
     <Card css={cardCss}>
@@ -89,37 +87,29 @@ const Filters = ({ filterState, dispatchFilterChange }: FiltersProps) => {
         type="number"
         aria-label="Seed"
         width="100%"
-        value={seed}
-        onChange={(e) => { setSeed(parseFloat(e.target.value)); console.log(e.target.value) }}
+        value={filterState.seed.toString()}
+        onChange={e => dispatchFilterChange({ payload: { seed: parseFloat(e.target.value) } })}
       />
       <Input
         size="xl"
         labelLeft="Error Number:"
         aria-label="Error number"
         width="100%"
-        value={errorNumber}
+        value={filterState.errorNumber.toString()}
         type={"number"}
-        onChange={(e) => setErrorNumber(parseFloat(e.target.value))}
+        onChange={e => dispatchFilterChange({ payload: { errorNumber: (parseFloat(e.target.value)) } })}
       />
       <Input
         min={0}
         initialValue="0"
         max={1000}
-        onChange={e => setErrorNumber(parseFloat(e.target.value))}
+        onChange={e => dispatchFilterChange({ payload: { errorNumber: (parseFloat(e.target.value)) } })}
         size="xl"
-        labelLeft={errorNumber.toString()}
+        labelLeft={filterState.errorNumber}
         width="100%"
         type="range"
         aria-label="Error number"
       />
-      <Button
-        flat
-        size={"lg"}
-        css={{ ...bigButtonCss, marginTop: "20px" }}
-        onPress={() => dispatchFilterChange({ payload: { seed: seed, errorNumber: errorNumber } })}
-      >
-        Apply Filters
-      </Button>
       <Card css={{
         marginTop: "50px",
         padding: "20px 5px 20px 20px",
